@@ -32,12 +32,7 @@
                 <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
                     <span class="text-muted">👤 {{ $post->author }}</span>
                     <span class="text-muted">📅 {{ $post->created_at->format('d/m/Y H:i') }}</span>
-                    {{-- Badge trạng thái --}}
-                    @if ($post->status === 'published')
-                        <span class="badge bg-success">✅ Đã xuất bản</span>
-                    @else
-                        <span class="badge bg-warning text-dark">📝 Bản nháp</span>
-                    @endif
+                  <x-badge :status="$post->status" />
                 </div>
 
                 {{--

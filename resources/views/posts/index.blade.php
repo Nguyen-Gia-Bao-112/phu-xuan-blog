@@ -4,6 +4,12 @@
 
 @section('content')
 
+{{-- Hiển thị flash message nếu có --}}
+@if (session('success'))
+    <x-alert type="success" :dismissible="true">
+        {{ session('success') }}
+    </x-alert>
+@endif
 {{-- Header section: tiêu đề + thống kê --}}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -52,13 +58,7 @@
 
                 {{-- Badge trạng thái: màu khác nhau tùy status --}}
                 <div class="ms-3">
-                    @if ($post->status === 'published')
-                        <span class="badge bg-success">✅ Đã xuất bản</span>
-                    @elseif ($post->status === 'draft')
-                        <span class="badge bg-warning text-dark">📝 Bản nháp</span>
-                    @else
-                        <span class="badge bg-secondary">❓ Không xác định</span>
-                    @endif
+                   <x-badge :status="$post->status" />
                 </div>
             </div>
 
