@@ -1,41 +1,38 @@
-<!-- resources/views/articles/index.blade.php -->
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Danh sách Bài viết</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .article-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-        .article-card h3 { margin: 0 0 8px; color: #1B3F6E; }
-        .meta { color: #888; font-size: 14px; }
-        a.btn { background: #2E75B6; color: white; padding: 6px 14px; border-radius: 4px; text-decoration: none; font-size: 14px; }
-        a { color: #2E75B6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
-</head>
-<body>
-    <h1>📝 Danh sách Bài viết</h1>
-    <p>Tổng cộng: <strong>{{ count($articles) }}</strong> bài viết</p>
-    <hr>
+{{-- resources/views/articles/index.blade.php --}}
+@extends('layouts.app')
+
+@section('title', 'Blog – Danh sách Bài viết')
+
+@section('page-header')
+    <h1>📝 Blog</h1>
+    <p class="mb-0">{{ count($articles) }} bài viết</p>
+@endsection
+
+@section('content')
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 mb-0">Tất cả bài viết</h2>
+        <a href="{{ route('articles.create') }}" class="btn btn-primary">
+            + Thêm bài viết
+        </a>
+    </div>
 
     @forelse($articles as $article)
-        <div class="article-card">
-            <h3>
-                <a href="{{ route('articles.show', $article['id']) }}">
-                    {{ $article['title'] }}
-                </a>
-            </h3>
-            <p class="meta">
-                ✍ {{ $article['author'] }}  •  📅 {{ $article['date'] }}
-            </p>
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{{ route('articles.show', $article['id']) }}"
+                       class="text-decoration-none">
+                        {{ $article['title'] }}
+                    </a>
+                </h5>
+                <p class="card-text text-muted small">
+                    ✍ {{ $article['author'] }} &nbsp;•&nbsp; 📅 {{ $article['date'] }}
+                </p>
+                <a href="{{ route('articles.show', $article['id']) }}"
+                   class="btn btn-outline-primary btn-sm">Đọc tiếp →</a>
+            </div>
         </div>
     @empty
-        <p>Chưa có bài viết nào.</p>
+        <div class="alert alert-info">Chưa có bài viết nào.</div>
     @endforelse
-
-    <a href="{{ route('articles.create') }}" class="btn">+ Thêm bài viết mới</a>
-    <br><br>
-    <a href="{{ route('home') }}">← Trang chủ</a>
-</body>
-</html>
+@endsection

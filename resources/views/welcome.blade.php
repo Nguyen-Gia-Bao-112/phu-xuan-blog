@@ -1,30 +1,41 @@
-<!-- resources/views/welcome.blade.php -->
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Trang chủ – MyShop</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-        nav a { margin-right: 16px; color: #2E75B6; text-decoration: none; font-weight: bold; }
-        nav a:hover { text-decoration: underline; }
-        nav { background: #f4f4f4; padding: 12px 16px; border-radius: 6px; }
-    </style>
-</head>
-<body>
-    <h1>🏠 Chào mừng đến MyShop!</h1>
+{{-- resources/views/welcome.blade.php --}}
+@extends('layouts.app')
 
-    <nav>
-    <a href="{{ route('home') }}">Trang chủ</a>
-    <a href="{{ route('about') }}">Giới thiệu</a>
-    <a href="{{ route('articles.index') }}">Bài viết</a>   <!-- ← Thêm dòng này -->
-    <a href="{{ route('shop.products') }}">Sản phẩm</a>
-    <a href="{{ route('shop.cart') }}">Giỏ hàng</a>
-    <a href="{{ route('contact') }}">Liên hệ</a>
-</nav>
+@section('title', 'Trang chủ')
 
-    <p style="margin-top: 24px; color: #555;">
-        Đây là trang chủ của ứng dụng demo Lab 1.
-    </p>
-</body>
-</html>
+@section('page-header')
+    <h1 class="display-5 fw-bold">🏠 Chào mừng đến Phú Xuân Blog!</h1>
+    <p class="lead mb-0">Ứng dụng demo học Laravel – Đại học Phú Xuân</p>
+@endsection
+
+@section('content')
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📝 Blog</h5>
+                    <p class="card-text">Xem các bài viết mới nhất về Laravel và PHP.</p>
+                    <a href="{{ route('articles.index') }}" class="btn btn-primary btn-sm">Xem ngay</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">🛒 Cửa hàng</h5>
+                    <p class="card-text">Khám phá sản phẩm trong cửa hàng online.</p>
+                    <a href="{{ route('shop.products') }}" class="btn btn-success btn-sm">Mua sắm</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">ℹ Về chúng tôi</h5>
+                    <p class="card-text">Tìm hiểu thêm về nhóm phát triển.</p>
+                    <a href="{{ route('about') }}" class="btn btn-secondary btn-sm">Xem thêm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
