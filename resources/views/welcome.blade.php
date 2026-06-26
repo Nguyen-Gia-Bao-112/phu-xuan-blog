@@ -15,12 +15,13 @@
     <h1>🏠 Chào mừng đến MyShop!</h1>
 
     <nav>
-        <a href="{{ route('home') }}">Trang chủ</a>
-        <a href="{{ route('about') }}">Giới thiệu</a>
-        <a href="{{ route('shop.products') }}">Sản phẩm</a>
-        <a href="{{ route('shop.cart') }}">Giỏ hàng</a>
-        <a href="{{ route('contact') }}">Liên hệ</a>
-    </nav>
+    <a href="{{ route('home') }}">Trang chủ</a>
+    <a href="{{ route('about') }}">Giới thiệu</a>
+    <a href="{{ route('articles.index') }}">Bài viết</a>   <!-- ← Thêm dòng này -->
+    <a href="{{ route('shop.products') }}">Sản phẩm</a>
+    <a href="{{ route('shop.cart') }}">Giỏ hàng</a>
+    <a href="{{ route('contact') }}">Liên hệ</a>
+</nav>
 
     <p style="margin-top: 24px; color: #555;">
         Đây là trang chủ của ứng dụng demo Lab 1.

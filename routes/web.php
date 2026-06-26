@@ -29,3 +29,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
     // → URI: /shop/cart  |  Tên: shop.cart
 
 });
+use App\Http\Controllers\ArticleController;
+
+// Resource Route cho Articles
+Route::resource('articles', ArticleController::class);
