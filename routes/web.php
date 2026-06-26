@@ -1,38 +1,31 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
+// ─── Routes độc lập ─────────────────────────────────────────
 Route::get('/', function () {
-    return 'Chào mừng đến Phú Xuân Blog!';
-});
+    return view('welcome');
+})->name('home');
 
-Route::get('/about', function () {
-    return '<h1>Về chúng tôi</h1><p>Đại học Phú Xuân</p>';
-});
+Route::get('/about-us', function () {
+    return view('about');
+})->name('about');
 
-// Posts routes
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
-Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-use App\Http\Controllers\BlogController;
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
 
-Route::get('/', [BlogController::class, 'index']);
-Route::get('/posts/{id}', function ($id) {
-    return "Đang xem bài viết số: $id";
+// ─── Route Group với prefix /shop ───────────────────────────
+Route::prefix('shop')->name('shop.')->group(function () {
+
+    Route::get('/products', function () {
+        return view('shop.products');
+    })->name('products');
+    // → URI: /shop/products  |  Tên: shop.products
+
+    Route::get('/cart', function () {
+        return view('shop.cart');
+    })->name('cart');
+    // → URI: /shop/cart  |  Tên: shop.cart
+
 });
