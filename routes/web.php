@@ -33,3 +33,6 @@ use App\Http\Controllers\ArticleController;
 
 // Resource Route cho Articles
 Route::resource('articles', ArticleController::class);
+use App\Http\Controllers\PostController;
+
+Route::resource('posts', PostController::class);

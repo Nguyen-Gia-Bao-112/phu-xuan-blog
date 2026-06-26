@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     public function index()
-    {
-        return 'Danh sách bài viết (index)';
-    }
+{
+    // Tạm thời return view để test layout
+    // Buổi 5-6 sẽ thay bằng dữ liệu thật từ database
+    return view('posts.index');
+}
 
     public function create()
     {
