@@ -1,33 +1,19 @@
-<!-- resources/views/components/navbar.blade.php -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: #1B2A4A;">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="{{ route('home') }}">
-            🚀 Phú Xuân Blog
+        <a class="navbar-brand fw-bold" href="/">
+            📝 Phú Xuân Blog
         </a>
         <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navMenu">
+                data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navMenu">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}">Trang chủ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('about') }}">Giới thiệu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('articles.index') }}">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('shop.products') }}">Sản phẩm</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('shop.cart') }}">Giỏ hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('contact') }}">Liên hệ</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="/">🏠 Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" href="/posts">📰 Bài viết</a></li>
+                <li class="nav-item"><a class="nav-link" href="/posts/create">✏️ Viết bài</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about">ℹ️ Giới thiệu</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contact">📞 Liên hệ</a></li>
             </ul>
         </div>
     </div>

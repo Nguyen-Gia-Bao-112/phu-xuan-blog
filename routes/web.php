@@ -1,12 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ArticleController;
 
-// ─── Routes độc lập ─────────────────────────────────────────
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// ─── Trang chủ ──────────────────────────────────────────────────────
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// ─── Trang tĩnh ─────────────────────────────────────────────────────
 Route::get('/about', function () {
     return view('about');
 })->name('about');
@@ -15,24 +24,17 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
-// ─── Route Group với prefix /shop ───────────────────────────
+// ─── Shop (từ Lab cũ) ──────────────────────────────────────────────
 Route::prefix('shop')->name('shop.')->group(function () {
-
     Route::get('/products', function () {
         return view('shop.products');
     })->name('products');
-    // → URI: /shop/products  |  Tên: shop.products
 
     Route::get('/cart', function () {
         return view('shop.cart');
     })->name('cart');
-    // → URI: /shop/cart  |  Tên: shop.cart
-
 });
-use App\Http\Controllers\ArticleController;
 
-// Resource Route cho Articles
+// ─── Resource Routes ─────────────────────────────────────────────────
 Route::resource('articles', ArticleController::class);
-use App\Http\Controllers\PostController;
-
 Route::resource('posts', PostController::class);

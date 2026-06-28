@@ -4,71 +4,59 @@
 
 @section('content')
 
-{{-- Breadcrumb --}}
-<nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('posts.index') }}">Bài viết</a></li>
-        <li class="breadcrumb-item active">{{ Str::limit($post->title, 40) }}</li>
-    </ol>
-</nav>
+<div style="max-width: 760px; margin: 0 auto;">
 
-<div class="row">
-    <div class="col-lg-8">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ route('posts.index') }}">📰 Danh sách</a>
+            </li>
+            <li class="breadcrumb-item active">
+                {{ Str::limit($post->title, 40) }}
+            </li>
+        </ol>
+    </nav>
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-
-                <h1 class="h2 mb-3">{{ $post->title }}</h1>
-
-                <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
-                    <span class="text-muted">👤 Tác giả: {{ $post->user_id }}</span>
-                    <span class="text-muted">📅 {{ $post->created_at->format('d/m/Y H:i') }}</span>
-                    {{-- Tạm thời bỏ badge vì chưa có cột status --}}
-                </div>
-
-                {{-- ✅ ĐÃ SỬA: dùng content thay vì body --}}
-                <div class="post-content" style="line-height: 1.8; font-size: 1.05rem;">
-                    {{ $post->content }}
-                </div>
-
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary">
-                ← Quay lại danh sách
-            </a>
+    <article class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center py-3"
+             style="background:#1B2A4A;">
+            <h4 class="mb-0 text-white">{{ $post->title }}</h4>
             <div class="d-flex gap-2">
-                <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-outline-primary">✏ Sửa bài</a>
-                <form action="{{ route('posts.destroy', $post->id) }}" method="POST">
+                <a href="{{ route('posts.edit', $post) }}"
+                   class="btn btn-sm btn-light">✏️ Sửa</a>
+                <form method="POST" action="{{ route('posts.destroy', $post) }}"
+                      onsubmit="return confirmDelete('{{ $post->title }}')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Xác nhận xóa bài viết này?')">
-                        🗑 Xóa
-                    </button>
+                    <button type="submit" class="btn btn-sm btn-danger">🗑️ Xóa</button>
                 </form>
             </div>
         </div>
-
-    </div>
-
-    <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header"><strong>📋 Thông tin bài viết</strong></div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>ID:</strong> {{ $post->id }}</li>
-                <li class="list-group-item"><strong>Tác giả:</strong> {{ $post->user_id }}</li>
-                <li class="list-group-item">
-                    <strong>Ngày đăng:</strong><br>
-                    {{ $post->created_at->format('d/m/Y') }}
-                    ({{ $post->created_at->diffForHumans() }})
-                </li>
-                {{-- Tạm thời bỏ trạng thái vì chưa có cột status --}}
-            </ul>
+        <div class="card-body p-4">
+            <p class="text-muted small mb-4">
+                📅 Tạo lúc {{ $post->created_at->format('d/m/Y H:i') }}
+                @if ($post->updated_at != $post->created_at)
+                    - Cập nhật {{ $post->updated_at->diffForHumans() }}
+                @endif
+            </p>
+            <div style="line-height:1.8; white-space:pre-wrap;">
+                {{ $post->content }}
+            </div>
         </div>
-    </div>
-
+        <div class="card-footer text-end">
+            <a href="{{ route('posts.index') }}" class="text-muted">
+                ← Quay lại danh sách
+            </a>
+        </div>
+    </article>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function confirmDelete(title) {
+        return confirm('Bạn có chắc muốn xóa bài viết: "' + title + '"?');
+    }
+</script>
+@endpush
