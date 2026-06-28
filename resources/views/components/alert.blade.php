@@ -1,7 +1,5 @@
-{{-- resources/views/components/alert.blade.php --}}
-
 @props([
-    'type' => 'info',   // 'success', 'danger', 'warning', 'info'
+    'type' => 'info',
     'dismissible' => false,
 ])
 
@@ -17,17 +15,14 @@
 <div class="alert {{ $colorClass }} {{ $dismissible ? 'alert-dismissible fade show' : '' }}"
      role="alert">
 
-    {{-- Named slot: $title – chỉ render nếu caller truyền vào --}}
-    @if ($title->isNotEmpty())
+    @if (isset($title) && $title->isNotEmpty())
         <h4 class="alert-heading">{{ $title }}</h4>
         <hr>
     @endif
 
-    {{-- Default slot: $slot – nội dung chính --}}
     {{ $slot }}
 
     @if ($dismissible)
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     @endif
-
 </div>

@@ -55,15 +55,15 @@
 
                     {{-- Nội dung --}}
                     <div class="mb-3">
-                        <label for="body" class="form-label fw-bold">
+                        <label for="content" class="form-label fw-bold">
                             Nội dung <span class="text-danger">*</span>
                         </label>
-                        <textarea class="form-control @error('body') is-invalid @enderror"
-                                  id="body" name="body"
+                        <textarea class="form-control @error('content') is-invalid @enderror"
+                                  id="content" name="content"
                                   rows="10"
                                   placeholder="Nhập nội dung bài viết..."
-                                  required>{{ old('body') }}</textarea>
-                        @error('body')
+                                  required>{{ old('content') }}</textarea>
+                        @error('content')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
