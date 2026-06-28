@@ -21,39 +21,38 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        $post = Post::create($request->validated() + ['user_id' => 1]);
+        Post::create($request->validated());
 
-        return redirect()
-            ->route('posts.show', $post)
-            ->with('success', 'Bài viết "' . $post->title . '" đã được tạo thành công!');
+        return redirect()->route('posts.index')
+            ->with('success', 'Đã thêm bài viết mới thành công.');
     }
 
-    public function show(Post $post)
+    public function show($id)
     {
+        $post = Post::findOrFail($id);
         return view('posts.show', compact('post'));
     }
 
-    public function edit(Post $post)
+    public function edit($id)
     {
+        $post = Post::findOrFail($id);
         return view('posts.edit', compact('post'));
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, $id)
     {
+        $post = Post::findOrFail($id);
         $post->update($request->validated());
 
-        return redirect()
-            ->route('posts.show', $post)
-            ->with('success', 'Cập nhật bài viết "' . $post->title . '" thành công!');
+        return redirect()->route('posts.index')
+            ->with('success', 'Đã cập nhật bài viết thành công.');
     }
 
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        $title = $post->title;
-        $post->delete();
+        Post::findOrFail($id)->delete();
 
-        return redirect()
-            ->route('posts.index')
-            ->with('success', 'Đã xóa bài viết: ' . $title);
+        return redirect()->route('posts.index')
+            ->with('success', 'Đã xoá bài viết.');
     }
 }
