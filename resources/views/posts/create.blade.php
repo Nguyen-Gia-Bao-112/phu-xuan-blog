@@ -4,6 +4,23 @@
 
 @section('content')
 
+{{-- HIỂN THỊ LỖI TỔNG HỢP --}}
+@if ($errors->any())
+    <div class='alert alert-danger'>
+        <strong>⚠ Vui lòng kiểm tra lại các trường sau:</strong>
+        <ul class='mb-0 mt-2'>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+{{-- FLASH MESSAGE THÀNH CÔNG --}}
+@if (session('success'))
+    <div class='alert alert-success'>{{ session('success') }}</div>
+@endif
+
 <div class="row justify-content-center">
     <div class="col-lg-8">
 
@@ -17,11 +34,6 @@
         <div class="card shadow-sm">
             <div class="card-body p-4">
 
-                {{--
-                    QUAN TRỌNG: action='{{ route('posts.store') }}' method='POST'
-                    @csrf BẮT BUỘC có trong mọi form POST/PUT/DELETE
-                    Nếu thiếu @csrf → Laravel báo lỗi 419 (Page Expired)
-                --}}
                 <form action="{{ route('posts.store') }}" method="POST">
                     @csrf
 
@@ -30,20 +42,12 @@
                         <label for="title" class="form-label fw-bold">
                             Tiêu đề bài viết <span class="text-danger">*</span>
                         </label>
-                        {{--
-                            old('title'): điền lại giá trị cũ khi form bị lỗi validation
-                            (sẽ dùng ở Buổi 4 khi học Validation)
-                        --}}
                         <input type="text"
                                class="form-control @error('title') is-invalid @enderror"
                                id="title" name="title"
                                value="{{ old('title') }}"
                                placeholder="Nhập tiêu đề bài viết..."
                                required>
-                        {{--
-                            @error('title'): hiển thị lỗi validation của field 'title'
-                            (sẽ hoạt động đầy đủ sau Buổi 4 khi thêm validation rules)
-                        --}}
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -68,10 +72,6 @@
                     <div class="mb-4">
                         <label for="status" class="form-label fw-bold">Trạng thái</label>
                         <select class="form-select" id="status" name="status">
-                            {{--
-                                old('status', 'draft'): giá trị cũ nếu có, mặc định 'draft'
-                                So sánh để set selected đúng option
-                            --}}
                             <option value="draft"
                                 {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>
                                 📝 Lưu nháp
@@ -102,7 +102,6 @@
 
 @endsection
 
-{{-- Push CSS riêng cho trang này vào @stack('styles') của layout --}}
 @push('styles')
     <style>
         textarea { resize: vertical; min-height: 200px; }

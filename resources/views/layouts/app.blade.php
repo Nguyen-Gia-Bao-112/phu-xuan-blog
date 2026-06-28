@@ -21,13 +21,29 @@
 </head>
 <body class="bg-light">
 
-    {{-- Navbar: @include nhúng file partials/navbar.blade.php --}}
+    {{-- Navbar --}}
     @include('partials.navbar')
 
-    {{-- Vùng nội dung chính – mỗi trang tự định nghĩa --}}
-    <main class="container py-4">
+    <div class="container mt-3">
+
+        {{-- ===== FLASH MESSAGES (THÊM VÀO ĐÂY) ===== --}}
+        @foreach (['success', 'error', 'warning', 'info'] as $type)
+            @if (session($type))
+                <div class="alert alert-{{ $type }} alert-dismissible fade show" role="alert">
+                    @if ($type === 'success') ✅
+                    @elseif ($type === 'error') ❌
+                    @elseif ($type === 'warning') ⚠
+                    @else ℹ @endif
+                    {{ session($type) }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+        @endforeach
+        {{-- ===== KẾT THÚC FLASH MESSAGES ===== --}}
+
+        {{-- Vùng nội dung chính – mỗi trang tự định nghĩa --}}
         @yield('content')
-    </main>
+    </div>
 
     {{-- Footer --}}
     @include('partials.footer')

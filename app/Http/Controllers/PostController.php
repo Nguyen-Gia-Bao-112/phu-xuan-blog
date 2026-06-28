@@ -70,16 +70,33 @@ class PostController extends Controller
     /**
      * Lưu bài viết mới (chưa implement - sẽ làm ở Buổi 4)
      */
-    public function store(Request $request)
-    {
-        // Tạm thời redirect về trang danh sách
-        return redirect()->route('posts.index')
-            ->with('success', 'Bài viết đã được tạo thành công!');
-    }
+   public function store(Request $request)
+{
+    $validated = $request->validate(
+        // Tham số 1: Rules
+        [
+            'title'   => 'required|string|min:5|max:255',
+            'content' => 'required|string|min:10',
+        ],
+        // Tham số 2: Custom Messages (TIẾNG VIỆT)
+        [
+            'title.required'   => 'Tiêu đề bài viết không được để trống.',
+            'title.min'        => 'Tiêu đề phải có ít nhất :min ký tự.',
+            'title.max'        => 'Tiêu đề không được vượt quá :max ký tự.',
+            'content.required' => 'Nội dung bài viết không được để trống.',
+            'content.min'      => 'Nội dung phải có ít nhất :min ký tự.',
+        ]
+    );
 
-    /**
-     * Hiển thị chi tiết 1 bài viết
-     */
+    Post::create([
+        'title'   => $validated['title'],
+        'content' => $validated['content'],
+        'user_id' => 1,
+    ]);
+
+    return redirect()->route('posts.index')
+                     ->with('success', 'Tạo bài viết thành công!');
+}
     public function show(string $id)
     {
         // Tìm bài viết theo id trong collection giả
@@ -105,14 +122,27 @@ class PostController extends Controller
     /**
      * Cập nhật bài viết (chưa implement)
      */
-    public function update(Request $request, string $id)
-    {
-        return redirect()->route('posts.index');
-    }
+    public function update(Request $request, Post $post)
+{
+    $validated = $request->validate(
+        [
+            'title'   => 'required|string|min:5|max:255',
+            'content' => 'required|string|min:10',
+        ],
+        [
+            'title.required'   => 'Tiêu đề bài viết không được để trống.',
+            'title.min'        => 'Tiêu đề phải có ít nhất :min ký tự.',
+            'title.max'        => 'Tiêu đề không được vượt quá :max ký tự.',
+            'content.required' => 'Nội dung bài viết không được để trống.',
+            'content.min'      => 'Nội dung phải có ít nhất :min ký tự.',
+        ]
+    );
 
-    /**
-     * Xóa bài viết (chưa implement)
-     */
+    $post->update($validated);
+
+    return redirect()->route('posts.edit', $post)
+                     ->with('success', 'Cập nhật bài viết thành công!');
+}
     public function destroy(string $id)
     {
         return redirect()->route('posts.index');
