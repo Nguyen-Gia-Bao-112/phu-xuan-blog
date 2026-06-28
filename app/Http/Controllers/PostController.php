@@ -50,9 +50,25 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        Post::findOrFail($id)->delete();
+        $post = Post::findOrFail($id);
+        $post->delete();
 
         return redirect()->route('posts.index')
-            ->with('success', 'Đã xoá bài viết.');
+            ->with('success', 'Đã xóa bài viết.');
+    }
+
+    // ─── Soft Delete Methods ─────────────────────────────────────────
+    public function trashed()
+    {
+        $posts = Post::onlyTrashed()->latest('deleted_at')->paginate(10);
+        return view('posts.trashed', compact('posts'));
+    }
+
+    public function restore($id)
+    {
+        Post::onlyTrashed()->findOrFail($id)->restore();
+
+        return redirect()->route('posts.trashed')
+            ->with('success', 'Đã khôi phục bài viết thành công.');
     }
 }

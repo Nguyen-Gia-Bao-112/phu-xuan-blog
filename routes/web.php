@@ -35,6 +35,10 @@ Route::prefix('shop')->name('shop.')->group(function () {
     })->name('cart');
 });
 
+// ─── Soft Delete Routes (PHẢI ĐẶT TRƯỚC Route::resource) ──────────
+Route::get('/posts/trashed', [PostController::class, 'trashed'])->name('posts.trashed');
+Route::patch('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
+
 // ─── Resource Routes ─────────────────────────────────────────────────
 Route::resource('articles', ArticleController::class);
 Route::resource('posts', PostController::class);
