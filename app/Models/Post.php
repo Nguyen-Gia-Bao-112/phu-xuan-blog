@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    // ✅ Liệt kê các field được phép mass-assign
-    protected $fillable = [
-        'title',
-        'content',
-        'user_id',
+    // Tạm thời cho phép tất cả field được mass-assign
+    protected $guarded = [];
+
+    protected $casts = [
+        'published_at' => 'datetime',
     ];
 }
