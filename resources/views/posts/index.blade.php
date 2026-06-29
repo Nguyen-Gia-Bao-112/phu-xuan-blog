@@ -33,11 +33,19 @@
                         <p class="card-text text-muted small">
                             {{ Str::limit($post->content, 120) }}
                         </p>
-                        <small class="text-muted">
-                            📅 {{ $post->created_at->diffForHumans() }}
-                        </small>
 
-                        {{-- ✅ HIỂN THỊ TAG (BƯỚC 2 LAB 7) --}}
+                        {{-- ✅ HIỂN THỊ TÁC GIẢ, DANH MỤC, NGÀY, BÌNH LUẬN --}}
+                        <div class="d-flex flex-wrap gap-2 text-muted small">
+                            <span>👤 {{ $post->user->name ?? 'Unknown' }}</span>
+                            <span>·</span>
+                            <span>📂 {{ $post->category->name ?? 'Không có' }}</span>
+                            <span>·</span>
+                            <span>📅 {{ $post->created_at->diffForHumans() }}</span>
+                            <span>·</span>
+                            <span>💬 {{ $post->comments_count }} bình luận</span>
+                        </div>
+
+                        {{-- ✅ HIỂN THỊ TAG --}}
                         @if ($post->tags->isNotEmpty())
                             <div class="mt-2">
                                 @foreach ($post->tags as $tag)
