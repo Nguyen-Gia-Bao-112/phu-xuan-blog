@@ -27,9 +27,10 @@ class PostController extends Controller
             ->with('success', 'Đã thêm bài viết mới thành công.');
     }
 
+    // ✅ BƯỚC 4: THÊM withCount('comments') VÀO show()
     public function show($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::withCount('comments')->findOrFail($id);
         return view('posts.show', compact('post'));
     }
 

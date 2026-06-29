@@ -49,6 +49,28 @@
             </a>
         </div>
     </article>
+
+    {{-- ✅ BƯỚC 5: HIỂN THỊ BÌNH LUẬN --}}
+    <div class="mt-5">
+        <h3>💬 Bình luận ({{ $post->comments_count }})</h3>
+
+        @forelse ($post->approvedComments as $comment)
+            <div class="card mb-2 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ $comment->user->name }}</strong>
+                            <p class="mb-1">{{ $comment->body }}</p>
+                        </div>
+                        <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <p class="text-muted">Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</p>
+        @endforelse
+    </div>
+
 </div>
 
 @endsection
@@ -59,4 +81,15 @@
         return confirm('Bạn có chắc muốn xóa bài viết: "' + title + '"?');
     }
 </script>
+@endpush
+
+@push('styles')
+<style>
+    .comment-card {
+        transition: all 0.2s;
+    }
+    .comment-card:hover {
+        background-color: #f8f9fa;
+    }
+</style>
 @endpush
