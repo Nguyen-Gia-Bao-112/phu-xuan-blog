@@ -2,24 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Thứ tự QUAN TRỌNG: tránh lỗi foreign key
+        $this->call([
+            UserSeeder::class,       // 1. Users trước (Posts cần user_id)
+            CategorySeeder::class,   // 2. Categories (Posts cần category_id)
+            TagSeeder::class,        // 3. Tags (Posts cần tags để sync pivot)
+            PostSeeder::class,       // 4. Posts (cần users + categories + tags đã có)
+            CommentSeeder::class,    // 5. Comments (cần users + posts đã có)
         ]);
     }
 }

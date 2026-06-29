@@ -2,17 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'post_id',
         'user_id',
         'body',
         'is_approved',
     ];
+
+    protected $casts = [
+        'is_approved' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    // ─── Relationships ──────────────────────────────────────────────
 
     public function post(): BelongsTo
     {
