@@ -50,7 +50,17 @@
         </div>
     </article>
 
-    {{-- ✅ BƯỚC 5: HIỂN THỊ BÌNH LUẬN --}}
+    {{-- ✅ HIỂN THỊ TAG (LAB 2 BUỔI 7) --}}
+    @if ($post->tags->isNotEmpty())
+        <div class="mt-4">
+            <strong>🏷️ Tags:</strong>
+            @foreach ($post->tags as $tag)
+                <span class="badge bg-secondary me-1">{{ $tag->name }}</span>
+            @endforeach
+        </div>
+    @endif
+
+    {{-- ✅ HIỂN THỊ BÌNH LUẬN --}}
     <div class="mt-5">
         <h3>💬 Bình luận ({{ $post->comments_count }})</h3>
 

@@ -10,7 +10,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::latest()->paginate(10);
+        $posts = Post::with('tags')->latest()->paginate(10);
         return view('posts.index', compact('posts'));
     }
 
@@ -27,10 +27,11 @@ class PostController extends Controller
             ->with('success', 'Đã thêm bài viết mới thành công.');
     }
 
-    // ✅ BƯỚC 4: THÊM withCount('comments') VÀO show()
     public function show($id)
     {
-        $post = Post::withCount('comments')->findOrFail($id);
+        $post = Post::with(['tags', 'comments.user'])
+                    ->withCount('comments')
+                    ->findOrFail($id);
         return view('posts.show', compact('post'));
     }
 

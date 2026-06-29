@@ -36,6 +36,16 @@
                         <small class="text-muted">
                             📅 {{ $post->created_at->diffForHumans() }}
                         </small>
+
+                        {{-- ✅ HIỂN THỊ TAG (BƯỚC 2 LAB 7) --}}
+                        @if ($post->tags->isNotEmpty())
+                            <div class="mt-2">
+                                @foreach ($post->tags as $tag)
+                                    <span class="badge bg-secondary me-1">{{ $tag->name }}</span>
+                                @endforeach
+                            </div>
+                        @endif
+
                     </div>
                     <div class="d-flex gap-2 flex-shrink-0">
                         <a href="{{ route('posts.edit', $post) }}"
