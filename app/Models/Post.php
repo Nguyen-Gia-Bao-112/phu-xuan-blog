@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,7 +29,7 @@ class Post extends Model
 
     protected $casts = [
         'published_at' => 'datetime',
-        'view_count' => 'integer',
+        'view_count'   => 'integer',
     ];
 
     protected $appends = [
@@ -73,23 +74,24 @@ class Post extends Model
 
     // ─── Scopes ─────────────────────────────────────────────────────
 
-    public function scopePublished($query)
+    public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', 'published')
+                     ->whereNotNull('published_at')
                      ->where('published_at', '<=', now());
     }
 
-    public function scopePopular($query)
+    public function scopePopular(Builder $query): Builder
     {
         return $query->orderByDesc('view_count');
     }
 
-    public function scopeRecent($query, int $days = 7)
+    public function scopeRecent(Builder $query, int $days = 7): Builder
     {
-        return $query->where('created_at', '>=', now()->subDays($days));
+        return $query->where('published_at', '>=', now()->subDays($days));
     }
 
-    public function scopeOfCategory($query, int $categoryId)
+    public function scopeOfCategory(Builder $query, int $categoryId): Builder
     {
         return $query->where('category_id', $categoryId);
     }

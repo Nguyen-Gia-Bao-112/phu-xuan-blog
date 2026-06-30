@@ -5,23 +5,33 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Models\Category;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::select('id', 'title', 'user_id', 'category_id', 'created_at', 'status')
-            ->with([
-                'user:id,name',
-                'category:id,name',
-                'tags:id,name',
-            ])
-            ->withCount('comments')
-            ->where('status', 'published')
-            ->latest()
-            ->paginate(10);
+        $posts = Post::query()
+            ->published()                          // Local Scope
+            ->with(['user', 'category', 'tags'])   // Eager loading
+            ->withCount('comments')                // Đếm comments
+            ->when($request->search, function ($q, $search) {
+                $q->where('title', 'like', "%{$search}%");
+            })
+            ->when($request->category_id, function ($q, $catId) {
+                $q->ofCategory($catId);            // Scope with parameter
+            })
+            ->when($request->sort === 'popular', function ($q) {
+                $q->popular();                     // Scope popular
+            }, function ($q) {
+                $q->orderByDesc('published_at');   // Default: mới nhất
+            })
+            ->paginate(10)->withQueryString();
 
-        return view('posts.index', compact('posts'));
+        $categories = Category::all();
+
+        return view('posts.index', compact('posts', 'categories'));
     }
 
     public function create()

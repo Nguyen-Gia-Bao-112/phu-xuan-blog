@@ -11,12 +11,37 @@
     </a>
 </div>
 
+{{-- ✅ BƯỚC 4: FORM TÌM KIẾM VÀ LỌC --}}
+<form method="GET" action="{{ route('posts.index') }}" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="search" value="{{ request('search') }}"
+               class="form-control" placeholder="🔍 Tìm kiếm bài viết...">
+    </div>
+    <div class="col-md-3">
+        <select name="category_id" class="form-select">
+            <option value="">📂 Tất cả danh mục</option>
+            @foreach ($categories as $cat)
+                <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
+                    {{ $cat->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="sort" class="form-select">
+            <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>🆕 Mới nhất</option>
+            <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>🔥 Phổ biến nhất</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary w-100">Lọc</button>
+        <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary w-100">Reset</a>
+    </div>
+</form>
+
 @if ($posts->isEmpty())
     <div class="text-center py-5">
-        <p class="text-muted fs-4">📭 Chưa có bài viết nào.</p>
-        <a href="{{ route('posts.create') }}" class="btn btn-outline-primary mt-2">
-            ✏️ Viết bài đầu tiên
-        </a>
+        <p class="text-muted fs-4">📭 Không tìm thấy bài viết nào.</p>
     </div>
 @else
     @foreach ($posts as $post)
@@ -31,21 +56,23 @@
                             </a>
                         </h5>
                         <p class="card-text text-muted small">
-                            {{ Str::limit($post->content, 120) }}
+                            {{ Str::limit($post->excerpt ?? $post->content, 120) }}
                         </p>
 
-                        {{-- ✅ HIỂN THỊ TÁC GIẢ, DANH MỤC, NGÀY, BÌNH LUẬN --}}
-                        <div class="d-flex flex-wrap gap-2 text-muted small">
+                        {{-- ✅ HIỂN THỊ THÔNG TIN CHI TIẾT (BƯỚC 3) --}}
+                        <div class="d-flex flex-wrap gap-3 text-muted small">
                             <span>👤 {{ $post->user->name ?? 'Unknown' }}</span>
                             <span>·</span>
                             <span>📂 {{ $post->category->name ?? 'Không có' }}</span>
                             <span>·</span>
-                            <span>📅 {{ $post->created_at->diffForHumans() }}</span>
+                            <span>📅 {{ $post->published_at?->format('d/m/Y') ?? 'Chưa đăng' }}</span>
+                            <span>·</span>
+                            <span>⏱️ {{ $post->reading_time }}</span>
                             <span>·</span>
                             <span>💬 {{ $post->comments_count }} bình luận</span>
                         </div>
 
-                        {{-- ✅ HIỂN THỊ TAG --}}
+                        {{-- Tags --}}
                         @if ($post->tags->isNotEmpty())
                             <div class="mt-2">
                                 @foreach ($post->tags as $tag)
@@ -53,13 +80,10 @@
                                 @endforeach
                             </div>
                         @endif
-
                     </div>
                     <div class="d-flex gap-2 flex-shrink-0">
                         <a href="{{ route('posts.edit', $post) }}"
                            class="btn btn-sm btn-outline-primary">✏️ Sửa</a>
-
-                        {{-- Form xóa với confirm dialog --}}
                         <form method="POST"
                               action="{{ route('posts.destroy', $post) }}"
                               onsubmit="return confirmDelete('{{ $post->title }}')">
