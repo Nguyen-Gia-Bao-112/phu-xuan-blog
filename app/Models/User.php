@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // ✅ THÊM 'role' VÀO $fillable
     ];
 
     /**
@@ -56,5 +57,22 @@ class User extends Authenticatable
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    // ─── Role Helper Methods (BƯỚC 2) ─────────────────────────────
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isEditor(): bool
+    {
+        return in_array($this->role, ['admin', 'editor']);
+    }
+
+    public function owns(Post $post): bool
+    {
+        return $this->id === $post->user_id;
     }
 }

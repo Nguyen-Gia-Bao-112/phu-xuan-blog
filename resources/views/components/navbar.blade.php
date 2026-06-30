@@ -45,6 +45,14 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             👤 {{ Auth::user()->name }}
+                            {{-- ✅ BADGE ROLE (BƯỚC 5) --}}
+                            <span class="badge ms-1
+                                @if(Auth::user()->isAdmin()) bg-danger
+                                @elseif(Auth::user()->isEditor()) bg-warning text-dark
+                                @else bg-success
+                                @endif">
+                                {{ Auth::user()->role }}
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
