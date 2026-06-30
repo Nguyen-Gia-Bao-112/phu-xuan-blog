@@ -15,7 +15,8 @@
             Nơi chia sẻ kiến thức về Laravel và lập trình web
         </p>
         <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a href="{{ route('posts.index') }}" class="btn btn-light btn-lg px-4">
+            {{-- ✅ CÁCH 2: Dùng route('home') thay vì route('posts.index') --}}
+            <a href="{{ route('home') }}" class="btn btn-light btn-lg px-4">
                 📰 Xem bài viết
             </a>
             <a href="{{ route('posts.create') }}" class="btn btn-outline-light btn-lg px-4">
@@ -54,7 +55,8 @@
 <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="h4 mb-0">📰 Bài viết mới nhất</h3>
-        <a href="{{ route('posts.index') }}" class="btn btn-sm btn-outline-primary">
+        {{-- ✅ CÁCH 2: Dùng route('home') thay vì route('posts.index') --}}
+        <a href="{{ route('home') }}" class="btn btn-sm btn-outline-primary">
             Xem tất cả →
         </a>
     </div>

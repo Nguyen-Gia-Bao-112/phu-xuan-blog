@@ -14,25 +14,63 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                {{-- Menu công khai --}}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">🏠 Trang chủ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('posts.index') }}">📰 Bài viết</a>
                 </li>
+
+                {{-- Chỉ hiển thị khi đã đăng nhập --}}
+                @auth
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('posts.create') }}">✏️ Viết bài</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('posts.trashed') }}">🗑️ Thùng rác</a>
+                    </li>
+                @endauth
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('posts.create') }}">✏️ Viết bài</a>
-                </li>
-                {{-- ✅ THÊM NÚT THÙNG RÁC --}}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('posts.trashed') }}">🗑️ Thùng rác</a>
+                    <a class="nav-link" href="/about">ℹ️ Giới thiệu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('about') }}">ℹ️ Giới thiệu</a>
+                    <a class="nav-link" href="/contact">📞 Liên hệ</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('contact') }}">📞 Liên hệ</a>
-                </li>
+
+                {{-- Phần Auth --}}
+                @auth
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            👤 {{ Auth::user()->name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    ⚙️ Hồ sơ
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        🚪 Đăng xuất
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">🔑 Đăng nhập</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">📝 Đăng ký</a>
+                    </li>
+                @endauth
             </ul>
         </div>
 
