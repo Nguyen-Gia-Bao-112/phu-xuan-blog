@@ -18,11 +18,31 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// ─── Soft Delete Routes ─────────────────────────────────────────────
+// ─── POSTS ROUTES ───────────────────────────────────────────────────
+
+// 1. PUBLIC ROUTES (không cần login)
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+
+// ⚠️ QUAN TRỌNG: Các route cụ thể PHẢI ĐẶT TRƯỚC route động
+Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
 Route::get('/posts/trashed', [PostController::class, 'trashed'])->name('posts.trashed');
+
+// Route động (có tham số) đặt SAU cùng
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
+// Soft delete restore (cũng có tham số, đặt sau các route cụ thể)
 Route::patch('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
 
-// ─── Resource Routes ─────────────────────────────────────────────────
-Route::resource('posts', PostController::class);
+// 2. PROTECTED ROUTES (cần login)
+Route::middleware(['auth'])->group(function () {
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+
+    // Các route cần kiểm tra quyền sở hữu
+    Route::middleware(['post.owner'])->group(function () {
+        Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+        Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+        Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    });
+});
 
 require __DIR__.'/auth.php';
