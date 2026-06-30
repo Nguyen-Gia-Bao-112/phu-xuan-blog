@@ -10,32 +10,30 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate; // ✅ THÊM IMPORT NÀY
 
 class PostController extends Controller
 {
     public function index(Request $request)
     {
         $posts = Post::query()
-            ->published()                          // Local Scope: status = published & published_at <= now()
-            ->with(['user', 'category', 'tags'])   // Eager loading
-            ->withCount('comments')                // Đếm comments
+            ->published()
+            ->with(['user', 'category', 'tags'])
+            ->withCount('comments')
             ->when($request->search, function ($q, $search) {
                 $q->where('title', 'like', "%{$search}%");
             })
             ->when($request->category_id, function ($q, $catId) {
-                $q->ofCategory($catId);            // Scope with parameter
+                $q->ofCategory($catId);
             })
             ->when($request->sort === 'popular', function ($q) {
-                $q->popular();                     // Scope popular
+                $q->popular();
             }, function ($q) {
-                $q->orderByDesc('published_at');   // Default: mới nhất
+                $q->orderByDesc('published_at');
             })
             ->paginate(10)->withQueryString();
 
         $categories = Category::all();
-
-        // 🔍 DEBUG: Nếu không thấy bài viết, bỏ comment dòng dưới để kiểm tra dữ liệu
-        // dd($posts);
 
         return view('posts.index', compact('posts', 'categories'));
     }
@@ -49,23 +47,14 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        // Lấy dữ liệu đã validate
         $validated = $request->validated();
-
-        // Gắn user_id
         $validated['user_id'] = Auth::id();
-
-        // Tạo slug từ title
         $validated['slug'] = Str::slug($validated['title']) . '-' . Str::random(6);
-
-        // ✅ Bắt buộc: set status và published_at để bài viết xuất hiện trên trang danh sách
         $validated['status'] = 'published';
         $validated['published_at'] = now();
 
-        // Tạo bài viết
         $post = Post::create($validated);
 
-        // ✅ Gắn tags (nếu có)
         if ($request->has('tags')) {
             $post->tags()->sync($request->input('tags'));
         }
@@ -82,37 +71,50 @@ class PostController extends Controller
         return view('posts.show', compact('post'));
     }
 
-    public function edit($id)
+    // ✅ BƯỚC 2: ÁP DỤNG GATE VÀO edit()
+  public function edit($id)
 {
     $post = Post::findOrFail($id);
+
+    // Kiểm tra Gate – nếu không có quyền thì abort 403
+    if (! Gate::allows('update-post', $post)) {
+        abort(403, 'Bạn không có quyền chỉnh sửa bài viết này!');
+    }
+
     $categories = Category::all();
     $tags = Tag::all();
     $selectedTags = $post->tags->pluck('id')->toArray();
 
     return view('posts.edit', compact('post', 'categories', 'tags', 'selectedTags'));
 }
-
     public function update(UpdatePostRequest $request, $id)
     {
         $post = Post::findOrFail($id);
 
-        // Cập nhật dữ liệu cơ bản (title, content, category_id, status...)
+        // Gate::authorize() tự động ném exception 403 nếu không có quyền
+        Gate::authorize('update-post', $post);
+
         $post->update($request->validated());
 
-        // ✅ Cập nhật tags (quan hệ many-to-many)
         if ($request->has('tags')) {
             $post->tags()->sync($request->input('tags'));
         } else {
-            $post->tags()->detach(); // Nếu không chọn tag nào, xóa hết
+            $post->tags()->detach();
         }
 
         return redirect()->route('posts.index')
             ->with('success', 'Đã cập nhật bài viết thành công.');
     }
 
+    // ✅ BƯỚC 2: ÁP DỤNG GATE VÀO destroy()
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+
+        if (! Gate::allows('delete-post', $post)) {
+            abort(403, 'Bạn không có quyền xóa bài viết này!');
+        }
+
         $post->delete();
 
         return redirect()->route('posts.index')

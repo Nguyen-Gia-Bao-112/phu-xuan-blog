@@ -9,24 +9,14 @@ use App\Models\Post;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The model to policy mappings for the application.
-     */
-    protected $policies = [
-        // Post::class => PostPolicy::class,
-    ];
+    protected $policies = [];
 
-    /**
-     * Register any authentication / authorization services.
-     */
     public function boot(): void
     {
-        // ✅ Gate: kiểm tra quyền sửa bài (chỉ tác giả)
         Gate::define('update-post', function (User $user, Post $post) {
             return $user->id === $post->user_id;
         });
 
-        // ✅ Gate: kiểm tra quyền xóa bài (chỉ tác giả)
         Gate::define('delete-post', function (User $user, Post $post) {
             return $user->id === $post->user_id;
         });
