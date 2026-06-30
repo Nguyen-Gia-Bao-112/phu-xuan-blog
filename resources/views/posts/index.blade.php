@@ -6,12 +6,14 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">📰 Danh sách bài viết</h1>
-    <a href="{{ route('posts.create') }}" class="btn btn-primary">
-        ✏️ Viết bài mới
-    </a>
+    @auth
+        <a href="{{ route('posts.create') }}" class="btn btn-primary">
+            ✏️ Viết bài mới
+        </a>
+    @endauth
 </div>
 
-{{-- ✅ BƯỚC 4: FORM TÌM KIẾM VÀ LỌC --}}
+{{-- FORM TÌM KIẾM VÀ LỌC --}}
 <form method="GET" action="{{ route('posts.index') }}" class="row g-2 mb-4">
     <div class="col-md-4">
         <input type="text" name="search" value="{{ request('search') }}"
@@ -59,7 +61,7 @@
                             {{ Str::limit($post->excerpt ?? $post->content, 120) }}
                         </p>
 
-                        {{-- ✅ HIỂN THỊ THÔNG TIN CHI TIẾT (BƯỚC 3) --}}
+                        {{-- THÔNG TIN CHI TIẾT --}}
                         <div class="d-flex flex-wrap gap-3 text-muted small">
                             <span>👤 {{ $post->user->name ?? 'Unknown' }}</span>
                             <span>·</span>
@@ -81,18 +83,24 @@
                             </div>
                         @endif
                     </div>
+
+                    {{-- NÚT SỬA/XÓA – CHỈ HIỆN CHO TÁC GIẢ --}}
                     <div class="d-flex gap-2 flex-shrink-0">
-                        <a href="{{ route('posts.edit', $post) }}"
-                           class="btn btn-sm btn-outline-primary">✏️ Sửa</a>
-                        <form method="POST"
-                              action="{{ route('posts.destroy', $post) }}"
-                              onsubmit="return confirmDelete('{{ $post->title }}')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                🗑️ Xóa
-                            </button>
-                        </form>
+                        @auth
+                            @if (Auth::id() === $post->user_id)
+                                <a href="{{ route('posts.edit', $post) }}"
+                                   class="btn btn-sm btn-outline-primary">✏️ Sửa</a>
+                                <form method="POST"
+                                      action="{{ route('posts.destroy', $post) }}"
+                                      onsubmit="return confirmDelete('{{ $post->title }}')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        🗑️ Xóa
+                                    </button>
+                                </form>
+                            @endif
+                        @endauth
                     </div>
                 </div>
             </div>

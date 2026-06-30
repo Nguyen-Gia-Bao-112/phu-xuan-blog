@@ -48,6 +48,11 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
+                                <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                    📊 Dashboard
+                                </a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('profile.edit') }}">
                                     ⚙️ Hồ sơ
                                 </a>
@@ -68,7 +73,9 @@
                         <a class="nav-link" href="{{ route('login') }}">🔑 Đăng nhập</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">📝 Đăng ký</a>
+                        <a class="nav-link btn btn-outline-light btn-sm ms-2" href="{{ route('register') }}">
+                            📝 Đăng ký
+                        </a>
                     </li>
                 @endauth
             </ul>

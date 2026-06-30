@@ -68,6 +68,25 @@
                         @enderror
                     </div>
 
+                    {{-- ✅ BƯỚC 2: DANH MỤC --}}
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label fw-bold">
+                            📂 Danh mục <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select @error('category_id') is-invalid @enderror"
+                                id="category_id" name="category_id">
+                            <option value="">-- Chọn danh mục --</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                                    {{ $cat->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     {{-- Trạng thái --}}
                     <div class="mb-4">
                         <label for="status" class="form-label fw-bold">Trạng thái</label>
@@ -81,6 +100,27 @@
                                 ✅ Xuất bản ngay
                             </option>
                         </select>
+                    </div>
+
+                    {{-- Tags --}}
+                    <div class="mb-4">
+                        <label for="tags" class="form-label fw-bold">
+                            🏷️ Tags
+                        </label>
+                        <select name="tags[]" id="tags" class="form-select" multiple>
+                            @foreach ($tags as $tag)
+                                <option value="{{ $tag->id }}"
+                                    {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>
+                                    {{ $tag->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="form-text text-muted">
+                            Giữ <kbd>Ctrl</kbd> (hoặc <kbd>⌘ Cmd</kbd>) để chọn nhiều tag.
+                        </div>
+                        @error('tags')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     {{-- Nút submit --}}
@@ -106,5 +146,6 @@
     <style>
         textarea { resize: vertical; min-height: 200px; }
         .form-label { color: #1B2A4A; }
+        select[multiple] { min-height: 120px; }
     </style>
 @endpush

@@ -36,6 +36,22 @@ class Post extends Model
         'reading_time',
     ];
 
+    // ─── Model Events ───────────────────────────────────────────────
+
+    protected static function booted(): void
+    {
+        static::creating(function ($post) {
+            // Nếu chưa có status, mặc định là published
+            if (!$post->status) {
+                $post->status = 'published';
+            }
+            // Nếu chưa có published_at, đặt là thời điểm hiện tại
+            if (!$post->published_at) {
+                $post->published_at = now();
+            }
+        });
+    }
+
     // ─── Relationships ──────────────────────────────────────────────
 
     public function user(): BelongsTo
