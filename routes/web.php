@@ -34,15 +34,13 @@ Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show')
 Route::patch('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
 
 // 2. PROTECTED ROUTES (cần login)
+// ✅ Đã xóa middleware 'post.owner' – Policy sẽ kiểm tra quyền sở hữu
 Route::middleware(['auth'])->group(function () {
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
-    // Các route cần kiểm tra quyền sở hữu
-    Route::middleware(['post.owner'])->group(function () {
-        Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
-        Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-        Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-    });
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 });
 
 require __DIR__.'/auth.php';

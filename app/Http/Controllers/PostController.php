@@ -10,12 +10,14 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Gate; // ✅ THÊM IMPORT NÀY
 
 class PostController extends Controller
 {
+    // Không dùng authorizeResource() nữa, thay bằng authorize() trong từng method
+
     public function index(Request $request)
     {
+        // viewAny không cần authorize vì ai cũng xem được
         $posts = Post::query()
             ->published()
             ->with(['user', 'category', 'tags'])
@@ -40,6 +42,9 @@ class PostController extends Controller
 
     public function create()
     {
+        // Tạo bài viết: user cần đăng nhập (Policy create sẽ kiểm tra)
+        $this->authorize('create', Post::class);
+
         $categories = Category::all();
         $tags = Tag::all();
         return view('posts.create', compact('categories', 'tags'));
@@ -47,6 +52,9 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
+        // Tạo bài viết: user cần đăng nhập
+        $this->authorize('create', Post::class);
+
         $validated = $request->validated();
         $validated['user_id'] = Auth::id();
         $validated['slug'] = Str::slug($validated['title']) . '-' . Str::random(6);
@@ -63,36 +71,32 @@ class PostController extends Controller
             ->with('success', 'Đã thêm bài viết mới thành công.');
     }
 
-    public function show($id)
+    public function show(Post $post)
     {
-        $post = Post::with(['tags', 'comments.user'])
-                    ->withCount('comments')
-                    ->findOrFail($id);
+        // Xem chi tiết: kiểm tra Policy view
+        $this->authorize('view', $post);
+
+        $post->load(['tags', 'comments.user']);
+        $post->loadCount('comments');
         return view('posts.show', compact('post'));
     }
 
-    // ✅ BƯỚC 2: ÁP DỤNG GATE VÀO edit()
-  public function edit($id)
-{
-    $post = Post::findOrFail($id);
+    public function edit(Post $post)
+    {
+        // Sửa bài: kiểm tra Policy update
+        $this->authorize('update', $post);
 
-    // Kiểm tra Gate – nếu không có quyền thì abort 403
-    if (! Gate::allows('update-post', $post)) {
-        abort(403, 'Bạn không có quyền chỉnh sửa bài viết này!');
+        $categories = Category::all();
+        $tags = Tag::all();
+        $selectedTags = $post->tags->pluck('id')->toArray();
+
+        return view('posts.edit', compact('post', 'categories', 'tags', 'selectedTags'));
     }
 
-    $categories = Category::all();
-    $tags = Tag::all();
-    $selectedTags = $post->tags->pluck('id')->toArray();
-
-    return view('posts.edit', compact('post', 'categories', 'tags', 'selectedTags'));
-}
-    public function update(UpdatePostRequest $request, $id)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        $post = Post::findOrFail($id);
-
-        // Gate::authorize() tự động ném exception 403 nếu không có quyền
-        Gate::authorize('update-post', $post);
+        // Sửa bài: kiểm tra Policy update
+        $this->authorize('update', $post);
 
         $post->update($request->validated());
 
@@ -106,14 +110,10 @@ class PostController extends Controller
             ->with('success', 'Đã cập nhật bài viết thành công.');
     }
 
-    // ✅ BƯỚC 2: ÁP DỤNG GATE VÀO destroy()
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        $post = Post::findOrFail($id);
-
-        if (! Gate::allows('delete-post', $post)) {
-            abort(403, 'Bạn không có quyền xóa bài viết này!');
-        }
+        // Xóa bài: kiểm tra Policy delete
+        $this->authorize('delete', $post);
 
         $post->delete();
 
@@ -130,7 +130,9 @@ class PostController extends Controller
 
     public function restore($id)
     {
-        Post::onlyTrashed()->findOrFail($id)->restore();
+        $post = Post::onlyTrashed()->findOrFail($id);
+        // Có thể thêm authorize('restore', $post) nếu có Policy method restore
+        $post->restore();
 
         return redirect()->route('posts.trashed')
             ->with('success', 'Đã khôi phục bài viết thành công.');

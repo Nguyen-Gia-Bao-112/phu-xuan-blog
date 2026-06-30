@@ -22,12 +22,13 @@
              style="background:#1B2A4A;">
             <h4 class="mb-0 text-white">{{ $post->title }}</h4>
             <div class="d-flex gap-2">
-                @can('update-post', $post)
+                {{-- ✅ BƯỚC 6: DÙNG POLICY METHOD 'update' và 'delete' --}}
+                @can('update', $post)
                     <a href="{{ route('posts.edit', $post) }}"
                        class="btn btn-sm btn-light">✏️ Sửa</a>
                 @endcan
 
-                @can('delete-post', $post)
+                @can('delete', $post)
                     <form method="POST" action="{{ route('posts.destroy', $post) }}"
                           onsubmit="return confirmDelete('{{ $post->title }}')">
                         @csrf
@@ -36,7 +37,7 @@
                     </form>
                 @endcan
 
-                @cannot('update-post', $post)
+                @cannot('update', $post)
                     <small class="text-muted align-self-center">
                         🔒 Chỉ tác giả {{ $post->user->name ?? '' }} mới sửa được
                     </small>
